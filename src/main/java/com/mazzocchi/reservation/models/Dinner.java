@@ -17,13 +17,13 @@ public class Dinner {
     @Column(name = "id_dinner")
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private double price;
 
     @ManyToMany
