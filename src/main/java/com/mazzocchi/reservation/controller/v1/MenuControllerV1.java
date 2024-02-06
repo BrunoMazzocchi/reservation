@@ -1,4 +1,4 @@
-package com.mazzocchi.reservation.controller;
+package com.mazzocchi.reservation.controller.v1;
 
 import com.mazzocchi.reservation.dto.*;
 import com.mazzocchi.reservation.mapper.*;
