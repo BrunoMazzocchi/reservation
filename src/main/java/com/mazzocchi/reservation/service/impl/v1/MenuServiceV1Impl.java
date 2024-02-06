@@ -1,4 +1,4 @@
-package com.mazzocchi.reservation.service.impl;
+package com.mazzocchi.reservation.service.impl.v1;
 
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.repository.menu.*;

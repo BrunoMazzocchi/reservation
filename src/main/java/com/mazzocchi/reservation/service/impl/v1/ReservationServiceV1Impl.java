@@ -1,4 +1,4 @@
-package com.mazzocchi.reservation.service.impl;
+package com.mazzocchi.reservation.service.impl.v1;
 
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.repository.reserve.*;
@@ -19,24 +19,24 @@ public class ReservationServiceV1Impl implements IReservationService {
 
 
     @Override
-    public void saveReservation(Reserve reservation) {
+    public void saveReservation(Reservation reservation) {
         reservationRepository.save(reservation);
     }
 
     @Override
-    public List<Reserve> findAllReservations() {
+    public List<Reservation> findAllReservations() {
         return reservationRepository.findAll();
     }
 
     @Override
-    public Reserve findReservationById(Long id) {
+    public Reservation findReservationById(Long id) {
         return reservationRepository.findById(id).orElse(null);
     }
 
     @Override
-    public void updateReservationById(Long id, Reserve reservation) {
+    public void updateReservationById(Long id, Reservation reservation) {
           // Updates the reservation with the incoming reservation data
-        Reserve existingReservation = reservationRepository.findById(id).orElse(null);
+        Reservation existingReservation = reservationRepository.findById(id).orElse(null);
         if (existingReservation != null) {
             existingReservation.setDateReserve(reservation.getDateReserve());
             existingReservation.setState(reservation.getState());
@@ -50,7 +50,7 @@ public class ReservationServiceV1Impl implements IReservationService {
     @Override
     public void cancelReservationById(Long id) {
         // Updates the state to inactive
-        Reserve reservation = reservationRepository.findById(id).orElse(null);
+        Reservation reservation = reservationRepository.findById(id).orElse(null);
         if (reservation != null) {
             reservation.setState(State.INACTIVE);
             reservationRepository.save(reservation);

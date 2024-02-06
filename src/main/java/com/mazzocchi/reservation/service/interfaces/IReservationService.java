@@ -6,16 +6,16 @@ import java.util.*;
 
 public interface IReservationService {
     /// Save a new reservation
-    void saveReservation(Reserve reservation);
+    void saveReservation(Reservation reservation);
 
     /// Find all reservations
-    List<Reserve> findAllReservations();
+    List<Reservation> findAllReservations();
 
     /// Find a reservation by its id
-    Reserve findReservationById(Long id);
+    Reservation findReservationById(Long id);
 
     /// Update a reservation by its id
-    void updateReservationById(Long id, Reserve reservation);
+    void updateReservationById(Long id, Reservation reservation);
 
     /// Cancel a reservation by its id
     void cancelReservationById(Long id);

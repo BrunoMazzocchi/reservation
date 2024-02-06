@@ -9,7 +9,7 @@ import org.mapstruct.factory.*;
 public interface IReservationMapper {
     IReservationMapper INSTANCE = Mappers.getMapper(IReservationMapper.class);
     @Mapping(source = "id", target = "id")
-    ReserveDto  reservationToDto(Reserve reservation);
+    ReservationDto reservationToDto(Reservation reservation);
     @Mapping(source = "id", target = "id")
-    Reserve dtoToReservation(ReserveDto reservationDto);
+    Reservation dtoToReservation(ReservationDto reservationDto);
 }

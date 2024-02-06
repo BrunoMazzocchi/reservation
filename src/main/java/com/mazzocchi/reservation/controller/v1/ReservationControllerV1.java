@@ -22,26 +22,26 @@ public class ReservationControllerV1 {
     }
 
     @PostMapping("/save")
-    public ResponseEntity <String> saveReservation(@RequestBody ReserveDto reserveDto) {
-        reservationService.saveReservation(reservationMapper.dtoToReservation(reserveDto));
+    public ResponseEntity <String> saveReservation(@RequestBody ReservationDto reservationDto) {
+        reservationService.saveReservation(reservationMapper.dtoToReservation(reservationDto));
         return new ResponseEntity<>("Reservation saved", HttpStatus.OK);
     }
 
     @GetMapping("/all")
-    public ResponseEntity <List<ReserveDto>> findAllReservations() {
-        final List<Reserve> reservations = reservationService.findAllReservations();
+    public ResponseEntity <List<ReservationDto>> findAllReservations() {
+        final List<Reservation> reservations = reservationService.findAllReservations();
         return new ResponseEntity<>(reservations.stream().map(reservationMapper::reservationToDto).collect(Collectors.toList()), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReserveDto> findReservationById(@PathVariable Long id) {
-        final Reserve reservation = reservationService.findReservationById(id);
+    public ResponseEntity<ReservationDto> findReservationById(@PathVariable Long id) {
+        final Reservation reservation = reservationService.findReservationById(id);
         return new ResponseEntity<>(reservationMapper.reservationToDto(reservation), HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity <String> updateReservationById(@PathVariable Long id, @RequestBody ReserveDto reserveDto) {
-        reservationService.updateReservationById(id, reservationMapper.dtoToReservation(reserveDto));
+    public ResponseEntity <String> updateReservationById(@PathVariable Long id, @RequestBody ReservationDto reservationDto) {
+        reservationService.updateReservationById(id, reservationMapper.dtoToReservation(reservationDto));
         return new ResponseEntity<>("Reservation updated", HttpStatus.OK);
     }
 

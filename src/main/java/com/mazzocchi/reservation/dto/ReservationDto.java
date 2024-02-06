@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ReserveDto {
+public class ReservationDto {
     private Long id;
     private String customerName;
     private String customerNumber;

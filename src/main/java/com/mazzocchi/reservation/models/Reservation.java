@@ -10,7 +10,7 @@ import java.sql.*;
 @Table(name = "reserve")
 @Getter
 @Setter
-public class Reserve {
+public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reserve")

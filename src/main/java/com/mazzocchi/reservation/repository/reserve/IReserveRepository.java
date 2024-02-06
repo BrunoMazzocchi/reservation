@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.*;
 
 @Repository
-public interface IReserveRepository extends JpaRepository<Reserve, Long> {
+public interface IReserveRepository extends JpaRepository<Reservation, Long> {
 
 }
