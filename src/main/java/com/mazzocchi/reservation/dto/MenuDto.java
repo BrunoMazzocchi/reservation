@@ -11,4 +11,6 @@ public class MenuDto {
     private String name;
     private double price;
     private String state;
+
+    private List<DinnerDto> dinners;
 }

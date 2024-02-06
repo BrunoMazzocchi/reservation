@@ -24,7 +24,7 @@ public class MenuServiceV1Impl implements  IMenuService{
     }
 
     @Override
-    public Menu findMenuById(int id) {
-        return findMenuById(id);
+    public Menu findMenuById(Long id) {
+        return menuRepository.findById(id).orElse(null);
     }
 }

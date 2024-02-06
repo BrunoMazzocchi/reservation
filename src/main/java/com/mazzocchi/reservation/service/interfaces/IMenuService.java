@@ -6,6 +6,6 @@ import java.util.*;
 
 public interface IMenuService {
     List<Menu> findAllMenus();
-    Menu findMenuById(int id);
+    Menu findMenuById(Long id);
 
 }

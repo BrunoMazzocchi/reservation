@@ -5,7 +5,7 @@ import com.mazzocchi.reservation.models.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.*;
 
-@Mapper
+@Mapper(componentModel = "spring", uses = {IMenuMapper.class})
 public interface IMenuMapper {
     IMenuMapper INSTANCE = Mappers.getMapper(IMenuMapper.class);
 
