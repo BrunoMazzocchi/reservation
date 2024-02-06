@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.*;
 
 @Repository
-public interface DinnerRepository extends JpaRepository<Dinner, Long> {
+public interface IDinnerRepository extends JpaRepository<Dinner, Long> {
 }

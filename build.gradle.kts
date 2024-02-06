@@ -28,6 +28,9 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     implementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation ("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor ("org.mapstruct:mapstruct-processor:1.5.5.Final")
+
 }
 
 tasks.withType<Test> {
