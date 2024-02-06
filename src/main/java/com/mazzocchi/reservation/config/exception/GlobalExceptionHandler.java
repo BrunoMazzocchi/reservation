@@ -1,4 +1,4 @@
-package com.mazzocchi.reservation.exception;
+package com.mazzocchi.reservation.config.exception;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
