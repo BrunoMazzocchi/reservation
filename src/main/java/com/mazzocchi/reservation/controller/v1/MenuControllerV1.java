@@ -2,7 +2,6 @@ package com.mazzocchi.reservation.controller.v1;
 
 import com.mazzocchi.reservation.dto.*;
 import com.mazzocchi.reservation.dto.menu.*;
-import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
@@ -11,9 +10,6 @@ import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.stream.*;
-
 @RestController
 @RequestMapping("/api/v1/menu")
 public class MenuControllerV1 {
@@ -21,9 +17,6 @@ public class MenuControllerV1 {
     private final IMenuService menuService;
     private final IDinnerService dinnerService;
 
-    private final IMenuMapper menuMapper = IMenuMapper.INSTANCE;
-
-    private final IDinnerMapper dinnerMapper = IDinnerMapper.INSTANCE;
 
     public MenuControllerV1(IMenuService menuService, IDinnerService dinnerService) {
         this.menuService = menuService;
@@ -41,13 +34,13 @@ public class MenuControllerV1 {
             @RequestHeader(defaultValue = "10") int size,
             @RequestHeader(defaultValue = "ACTIVE") String state
     ) {
-            final Page<Menu> menus = menuService.findAllMenus(State.valueOf(state),  PageRequest.of(page, size));
+            final Page<MenuDto> menus = menuService.findAllMenus(State.valueOf(state),  PageRequest.of(page, size));
 
 
-            List<MenuDto> menuDto = menus.getContent().stream().map(menuMapper::menuToDto).collect(Collectors.toList());
+
 
             PagedResponse<MenuDto> response = new PagedResponse<>(
-                    menuDto,
+                    menus.getContent(),
                     menus.getNumber(),
                     menus.getSize(),
                     menus.getTotalElements(),
@@ -68,7 +61,7 @@ public class MenuControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<MenuDto> findMenuById(@PathVariable Long id) {
-        return new ResponseEntity<>(menuMapper.menuToDto(menuService.findMenuById(id)), HttpStatus.OK);
+        return new ResponseEntity<>(menuService.findMenuById(id), HttpStatus.OK);
     }
 
     @GetMapping("/{id}/dinner")

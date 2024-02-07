@@ -1,5 +1,8 @@
 package com.mazzocchi.reservation.service.impl.v1;
 
+import com.mazzocchi.reservation.config.exception.*;
+import com.mazzocchi.reservation.dto.menu.*;
+import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.repository.menu.*;
 import com.mazzocchi.reservation.service.interfaces.*;
@@ -14,17 +17,23 @@ import java.util.*;
 public class MenuServiceV1Impl implements  IMenuService{
     private final IMenuRepository menuRepository;
 
-    public MenuServiceV1Impl(IMenuRepository menuRepository, IDinnerRepository dinnerRepository) {
+    final IMenuMapper menuMapper = IMenuMapper.INSTANCE;
+
+    public MenuServiceV1Impl(IMenuRepository menuRepository) {
         this.menuRepository = menuRepository;
     }
 
 
     @Override
-    public Page<Menu> findAllMenus(State state, Pageable pageable) { return menuRepository.findByState(state, pageable); }
+    public Page<MenuDto> findAllMenus(State state, Pageable pageable) {
+        Page<Menu> menus = menuRepository.findByState(state, pageable);
+        return menus.map(menuMapper::menuToDto);
+    }
 
     @Override
-    public Menu findMenuById(Long id) {
-        return menuRepository.findById(id).orElse(null);
+    public MenuDto findMenuById(Long id) {
+        Menu menu = menuRepository.findById(id).orElseThrow(() -> new NotFoundException("Menu not found with id " + id));
+        return menuMapper.menuToDto(menu);
     }
 
 }
