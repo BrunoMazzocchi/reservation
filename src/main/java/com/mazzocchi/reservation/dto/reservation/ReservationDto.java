@@ -3,7 +3,6 @@ package com.mazzocchi.reservation.dto.reservation;
 import java.sql.*;
 
 import com.fasterxml.jackson.annotation.*;
-import com.mazzocchi.reservation.dto.menu.*;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 import lombok.*;

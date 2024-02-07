@@ -4,7 +4,6 @@ import com.mazzocchi.reservation.dto.menu.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.mazzocchi.reservation.models.Menu;
 import com.mazzocchi.reservation.models.State;
 
 public interface IMenuService {

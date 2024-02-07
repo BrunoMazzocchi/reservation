@@ -11,7 +11,4 @@ public interface IDinnerMapper {
 
     @Mapping(source = "id", target = "id")
     DinnerDto dinnerToDto(Dinner dinner);
-
-    @Mapping(source = "id", target = "id")
-    Dinner dtoToDinner(DinnerDto dinnerDto);
 }

@@ -9,8 +9,6 @@ import org.mapstruct.factory.*;
 public interface IReservationMapper {
     IReservationMapper INSTANCE = Mappers.getMapper(IReservationMapper.class);
     @Mapping(source = "id", target = "id")
-    ReservationDto reservationToDto(Reservation reservation);
-    @Mapping(source = "id", target = "id")
     Reservation dtoToReservation(ReservationDto reservationDto);
 
     @Mapping(source = "id", target = "id")

@@ -70,7 +70,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorHandlerResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
-        String message = "Invalid request body. Please check the syntax and types of your request.";
+        String message = "Invalid request body. Please check the syntax and types of your request." + ex.getMessage();
         return new ResponseEntity<>(buildErrorResponse(message, HttpStatus.BAD_REQUEST, Collections.singletonList(message)), HttpStatus.BAD_REQUEST);
     }
 

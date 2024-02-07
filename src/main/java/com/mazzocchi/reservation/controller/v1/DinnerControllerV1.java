@@ -1,18 +1,10 @@
 package com.mazzocchi.reservation.controller.v1;
-
-import com.mazzocchi.reservation.config.exception.*;
-import com.mazzocchi.reservation.dto.*;
 import com.mazzocchi.reservation.dto.menu.*;
-import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.*;
-import java.util.*;
-
 @RestController
 @RequestMapping("/api/v1/dinner")
 public class DinnerControllerV1 {
