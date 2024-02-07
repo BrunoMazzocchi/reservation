@@ -29,6 +29,7 @@ public class MenuControllerV1 {
     @Operation(summary = "Find all menus", description = "Find all paginated")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found all menus"),
+            @ApiResponse(responseCode = "404", description = "No menus found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<PagedResponse<MenuDto>> findAllMenus(

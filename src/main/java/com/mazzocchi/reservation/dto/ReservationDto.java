@@ -28,6 +28,7 @@ public class ReservationDto {
     @NotBlank(message = "State cannot be blank")
     private String state;
 
-    @Valid // Validates the nested MenuDto
+    @Valid
+    @NotNull(message = "Menu cannot be null")
     private MenuDto menu;
 }

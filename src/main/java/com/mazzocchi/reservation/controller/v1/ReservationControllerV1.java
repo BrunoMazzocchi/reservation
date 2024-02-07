@@ -1,11 +1,13 @@
 package com.mazzocchi.reservation.controller.v1;
 
+import com.mazzocchi.reservation.config.exception.*;
 import com.mazzocchi.reservation.dto.*;
 import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
+import jakarta.validation.*;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -33,13 +35,14 @@ public class ReservationControllerV1 {
 
 
     })
-    public ResponseEntity <String> saveReservation(@RequestBody ReservationDto reservationDto) {
+    public ResponseEntity <String> saveReservation(@Valid @RequestBody ReservationDto reservationDto) {
         // Saves the reservation. If the reservation is saved, returns a 201. If not, returns a 400
         try {
             reservationService.saveReservation(reservationMapper.dtoToReservation(reservationDto));
             return new ResponseEntity<>("Reservation saved", HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -143,6 +146,30 @@ public class ReservationControllerV1 {
             reservationService.cancelReservationById(id);
             return new ResponseEntity<>("Reservation canceled", HttpStatus.OK);
         } catch (Exception e) {
+            return new ResponseEntity<>("Internal Server error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/add-menu/{reservationId}/{menuId}")
+    @Operation(summary = "Add a menu to a reservation", description = "Add a menu to a reservation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Menu added to reservation"),
+            @ApiResponse(responseCode = "404", description = "Reservation not found"),
+            @ApiResponse(responseCode = "404", description = "Menu not found"),
+            @ApiResponse(responseCode = "404", description = "Menu is inactive"),
+            @ApiResponse(responseCode = "404", description = "Reservation is inactive"),
+            @ApiResponse(responseCode = "404", description = "Menu is already assigned to this reservation"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    public ResponseEntity <String> addMenuToReservation(@PathVariable Long reservationId, @PathVariable Long menuId) {
+        try {
+            reservationService.addMenuToReservation(reservationId, menuId);
+            return new ResponseEntity<>("Menu added to reservation", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (InactiveException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }  catch (Exception e) {
             return new ResponseEntity<>("Internal Server error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

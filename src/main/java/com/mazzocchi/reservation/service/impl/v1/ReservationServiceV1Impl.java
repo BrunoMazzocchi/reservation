@@ -1,11 +1,14 @@
 package com.mazzocchi.reservation.service.impl.v1;
 
+import com.mazzocchi.reservation.config.exception.*;
 import com.mazzocchi.reservation.models.*;
+import com.mazzocchi.reservation.repository.menu.*;
 import com.mazzocchi.reservation.repository.reserve.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
+import org.springframework.transaction.annotation.*;
 
 import java.util.*;
 
@@ -14,8 +17,11 @@ import java.util.*;
 public class ReservationServiceV1Impl implements IReservationService {
     private final IReserveRepository reservationRepository;
 
-    public ReservationServiceV1Impl(IReserveRepository reservationRepository) {
+    private final IMenuRepository menuRepository;
+
+    public ReservationServiceV1Impl(IReserveRepository reservationRepository, IMenuRepository menuRepository) {
         this.reservationRepository = reservationRepository;
+        this.menuRepository = menuRepository;
     }
 
 
@@ -57,5 +63,31 @@ public class ReservationServiceV1Impl implements IReservationService {
             reservation.setState(State.INACTIVE);
             reservationRepository.save(reservation);
         }
+    }
+
+    @Override
+    @Transactional
+    public void addMenuToReservation(Long reservationId, Long menuId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException("Reservation not found with id " + reservationId));
+
+        Menu menu = menuRepository.findById(menuId)
+                .orElseThrow(() -> new NotFoundException("Menu not found with id " + menuId));
+
+        if (menu.getState() == State.INACTIVE) {
+            throw new InactiveException("Menu is inactive");
+        }
+
+        if (reservation.getState() == State.INACTIVE) {
+            throw new InactiveException("Reservation is inactive");
+        }
+
+        if (reservation.getMenu() != null && reservation.getMenu().getId().equals(menuId)) {
+            throw new AlreadyAssignedException("Menu is already assigned to this reservation");
+        }
+
+        reservation.setMenu(menu);
+
+        reservationRepository.save(reservation);
     }
 }

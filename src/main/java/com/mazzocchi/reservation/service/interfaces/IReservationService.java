@@ -20,4 +20,7 @@ public interface IReservationService {
 
     /// Cancel a reservation by its id
     void cancelReservationById(Long id);
+
+    /// Add a menu to a reservation
+    void addMenuToReservation(Long reservationId, Long menuId);
 }
