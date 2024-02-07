@@ -11,6 +11,8 @@ import java.util.*;
 @Table(name = "menu")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Menu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

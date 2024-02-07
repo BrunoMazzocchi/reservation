@@ -5,7 +5,7 @@ import com.mazzocchi.reservation.models.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.*;
 
-@Mapper(uses = {IMenuMapper.class})
+@Mapper
 public interface IMenuMapper {
     IMenuMapper INSTANCE = Mappers.getMapper(IMenuMapper.class);
 
