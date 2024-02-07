@@ -28,7 +28,8 @@ public class MenuControllerV1 {
     @GetMapping("/all")
     @Operation(summary = "Find all menus", description = "Find all paginated")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Found all menus")
+            @ApiResponse(responseCode = "200", description = "Found all menus"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<PagedResponse<MenuDto>> findAllMenus(
             @RequestHeader(defaultValue = "0") int page,
@@ -65,16 +66,21 @@ public class MenuControllerV1 {
     @Operation(summary = "Find a menu by its id", description = "Find a menu by it's id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the menu"),
-            @ApiResponse(responseCode = "404", description = "Menu not found")
+            @ApiResponse(responseCode = "404", description = "Menu not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<MenuDto> findMenuById(@PathVariable Long id) {
-        // Tries to find the menu by its id and returns it if found. If not, returns a 404
-        final Menu menu = menuService.findMenuById(id);
+        try {
+            // Tries to find the menu by its id and returns it if found. If not, returns a 404
+            final Menu menu = menuService.findMenuById(id);
 
-        if (menu == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            if (menu == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            return new ResponseEntity<>(menuMapper.menuToDto(menu), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new ResponseEntity<>(menuMapper.menuToDto(menu), HttpStatus.OK);
     }
 }
