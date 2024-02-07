@@ -1,6 +1,6 @@
 package com.mazzocchi.reservation.mapper;
 
-import com.mazzocchi.reservation.dto.*;
+import com.mazzocchi.reservation.dto.menu.*;
 import com.mazzocchi.reservation.models.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.*;

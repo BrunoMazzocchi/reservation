@@ -1,4 +1,4 @@
-package com.mazzocchi.reservation.dto;
+package com.mazzocchi.reservation.dto.menu;
 
 import java.util.*;
 

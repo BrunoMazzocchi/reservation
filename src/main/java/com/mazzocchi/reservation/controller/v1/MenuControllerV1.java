@@ -1,6 +1,7 @@
 package com.mazzocchi.reservation.controller.v1;
 
 import com.mazzocchi.reservation.dto.*;
+import com.mazzocchi.reservation.dto.menu.*;
 import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.service.interfaces.*;

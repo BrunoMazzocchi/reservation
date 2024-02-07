@@ -1,7 +1,7 @@
 package com.mazzocchi.reservation.controller.v1;
 
-import com.mazzocchi.reservation.config.exception.*;
 import com.mazzocchi.reservation.dto.*;
+import com.mazzocchi.reservation.dto.reservation.*;
 import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.service.interfaces.*;
@@ -20,8 +20,6 @@ import java.util.stream.*;
 public class ReservationControllerV1 {
     final IReservationService reservationService;
 
-    final IReservationMapper reservationMapper = IReservationMapper.INSTANCE;
-
     public ReservationControllerV1(IReservationService reservationService) {
         this.reservationService = reservationService;
     }
@@ -36,9 +34,7 @@ public class ReservationControllerV1 {
 
     })
     public ResponseEntity <String> saveReservation(@Valid @RequestBody ReservationDto reservationDto) {
-        // Saves the reservation. If the reservation is saved, returns a 201. If not, returns a 400
-
-            reservationService.saveReservation(reservationMapper.dtoToReservation(reservationDto));
+            reservationService.saveReservation(reservationDto);
             return new ResponseEntity<>("Reservation saved", HttpStatus.CREATED);
 
     }
@@ -49,17 +45,17 @@ public class ReservationControllerV1 {
             @ApiResponse(responseCode = "200", description = "Found reservations"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public ResponseEntity<PagedResponse<ReservationDto>> findAllMenus(
+    public ResponseEntity<PagedResponse<ReservationResponseDto>> findAllMenus(
             @RequestHeader(defaultValue = "0") int page,
             @RequestHeader(defaultValue = "10") int size,
             @RequestHeader(defaultValue = "ACTIVE") String state
     ) {
 
-            final Page<Reservation> reservations = reservationService.findAllReservations(State.valueOf(state), PageRequest.of(page, size));
+            final Page<ReservationResponseDto> reservations = reservationService.findAllReservations(State.valueOf(state), PageRequest.of(page, size));
 
-            List<ReservationDto> reservationDto = reservations.getContent().stream().map(reservationMapper::reservationToDto).collect(Collectors.toList());
+            List<ReservationResponseDto> reservationDto = new ArrayList<>(reservations.getContent());
 
-            PagedResponse<ReservationDto> response = new PagedResponse<>(
+            PagedResponse<ReservationResponseDto> response = new PagedResponse<>(
                     reservationDto,
                     reservations.getNumber(),
                     reservations.getSize(),
@@ -83,11 +79,8 @@ public class ReservationControllerV1 {
             @ApiResponse(responseCode = "404", description = "Reservation not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public ResponseEntity<ReservationDto> findReservationById(@PathVariable Long id) {
-
-            // Tries to find the reservation by its id and returns it if found. If not, returns a 404
-            final Reservation reservation = reservationService.findReservationById(id);
-            return new ResponseEntity<>(reservationMapper.reservationToDto(reservation), HttpStatus.OK);
+    public ResponseEntity<ReservationResponseDto> findReservationById(@PathVariable Long id) {
+            return new ResponseEntity<>(reservationService.findReservationById(id), HttpStatus.OK);
 
     }
 
@@ -99,10 +92,7 @@ public class ReservationControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity <String> updateReservationById(@PathVariable Long id, @RequestBody ReservationDto reservationDto) {
-
-            // If the reservation is not found, return a not found
-            Reservation reservation = reservationService.findReservationById(id);
-            reservationService.updateReservationById(id, reservationMapper.dtoToReservation(reservationDto));
+            reservationService.updateReservationById(id, reservationDto);
             return new ResponseEntity<>("Reservation updated", HttpStatus.OK);
 
     }

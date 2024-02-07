@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.*;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -66,6 +67,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleJsonProcessingException(JsonProcessingException ex) {
         // Create the error response
         return new ResponseEntity<>(buildErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST, Collections.singletonList(ex.getMessage())), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorHandlerResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        String message = "Invalid request body. Please check the syntax and types of your request.";
+        return new ResponseEntity<>(buildErrorResponse(message, HttpStatus.BAD_REQUEST, Collections.singletonList(message)), HttpStatus.BAD_REQUEST);
     }
 
     private ErrorHandlerResponse buildErrorResponse(String message, HttpStatus status, List<String> errors) {

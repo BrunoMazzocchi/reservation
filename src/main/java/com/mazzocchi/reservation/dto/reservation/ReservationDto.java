@@ -1,8 +1,9 @@
-package com.mazzocchi.reservation.dto;
+package com.mazzocchi.reservation.dto.reservation;
 
 import java.sql.*;
 
 import com.fasterxml.jackson.annotation.*;
+import com.mazzocchi.reservation.dto.menu.*;
 import jakarta.validation.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -19,7 +20,7 @@ public class ReservationDto {
     private String customerName;
 
     @NotBlank(message = "Customer number cannot be blank")
-    @Pattern(regexp = "\\d{12}", message = "Invalid phone number format. Must be 10 digits.")
+    @Pattern(regexp = "\\d{12}", message = "Invalid phone number format. Must be 12 digits.")
     private String customerNumber;
 
     @NotNull(message = "Reservation date cannot be null")
@@ -30,5 +31,5 @@ public class ReservationDto {
 
     @Valid
     @NotNull(message = "Menu cannot be null")
-    private MenuDto menu;
+    private Long menuId;
 }

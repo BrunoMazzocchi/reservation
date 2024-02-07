@@ -1,5 +1,6 @@
 package com.mazzocchi.reservation.service.interfaces;
 
+import com.mazzocchi.reservation.dto.reservation.*;
 import com.mazzocchi.reservation.models.*;
 import org.springframework.data.domain.*;
 
@@ -7,16 +8,16 @@ import java.util.*;
 
 public interface IReservationService {
     /// Save a new reservation
-    void saveReservation(Reservation reservation);
+    void saveReservation(ReservationDto reservation);
 
     /// Find all reservations
-    Page<Reservation> findAllReservations(State state, Pageable pageable);
+    Page<ReservationResponseDto> findAllReservations(State state, Pageable pageable);
 
     /// Find a reservation by its id
-    Reservation findReservationById(Long id);
+    ReservationResponseDto findReservationById(Long id);
 
     /// Update a reservation by its id
-    void updateReservationById(Long id, Reservation reservation);
+    void updateReservationById(Long id, ReservationDto reservation);
 
     /// Cancel a reservation by its id
     void cancelReservationById(Long id);

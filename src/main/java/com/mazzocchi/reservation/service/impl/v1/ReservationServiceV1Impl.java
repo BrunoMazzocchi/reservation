@@ -1,6 +1,8 @@
 package com.mazzocchi.reservation.service.impl.v1;
 
 import com.mazzocchi.reservation.config.exception.*;
+import com.mazzocchi.reservation.dto.reservation.*;
+import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.repository.menu.*;
 import com.mazzocchi.reservation.repository.reserve.*;
@@ -19,6 +21,9 @@ public class ReservationServiceV1Impl implements IReservationService {
 
     private final IMenuRepository menuRepository;
 
+
+    final IReservationMapper reservationMapper = IReservationMapper.INSTANCE;
+
     public ReservationServiceV1Impl(IReserveRepository reservationRepository, IMenuRepository menuRepository) {
         this.reservationRepository = reservationRepository;
         this.menuRepository = menuRepository;
@@ -26,33 +31,65 @@ public class ReservationServiceV1Impl implements IReservationService {
 
 
     @Override
-    public void saveReservation(Reservation reservation) {
-        reservationRepository.save(reservation);
-    }
+    public void saveReservation(ReservationDto reservationDto) {
+        Menu menu = menuRepository.findById(reservationDto
+                .getMenuId())
+                .orElseThrow(() -> new NotFoundException("Menu not found with id " + reservationDto.getMenuId()));
 
-    @Override
-    public Page<Reservation> findAllReservations(State state,  Pageable pageable) {
-        return reservationRepository.findByState(state,  pageable);
-    }
-
-
-    @Override
-    public Reservation findReservationById(Long id) {
-        return reservationRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public void updateReservationById(Long id, Reservation reservation) {
-          // Updates the reservation with the incoming reservation data
-        Reservation existingReservation = reservationRepository.findById(id).orElse(null);
-        if (existingReservation != null) {
-            existingReservation.setDateReserve(reservation.getDateReserve());
-            existingReservation.setState(reservation.getState());
-            existingReservation.setMenu(reservation.getMenu());
-            existingReservation.setCustomerName(reservation.getCustomerName());
-            existingReservation.setCustomerNumber(reservation.getCustomerNumber());
-            reservationRepository.save(existingReservation);
+        if (menu.getState() == State.INACTIVE) {
+            throw new InactiveException("Menu is inactive");
         }
+
+        Reservation newReservation = reservationMapper.dtoToReservation(reservationDto);
+
+        newReservation.setMenu(menu);
+
+        reservationRepository.save(newReservation);
+    }
+
+    @Override
+    public Page<ReservationResponseDto> findAllReservations(State state,  Pageable pageable) {
+        Page<Reservation> reservations = reservationRepository.findByState(state, pageable);
+
+        return reservations.map(reservationMapper::reservationToResponseDto);
+    }
+
+
+    @Override
+    public ReservationResponseDto findReservationById(Long id) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Reservation not found with id " + id));
+        return reservationMapper.reservationToResponseDto(reservation);
+    }
+
+    @Override
+    public void updateReservationById(Long id, ReservationDto reservationDto) {
+        Reservation reservation = reservationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Reservation not found with id " + id));
+
+        if (reservation.getState() == State.INACTIVE) {
+            throw new InactiveException("Reservation is inactive");
+        }
+
+        // Compares the changes in the reservationDto and the current reservation to update the values
+        if (reservationDto.getMenuId() != null) {
+            Menu newMenu = menuRepository.findById(reservationDto.getMenuId())
+                    .orElseThrow(() -> new NotFoundException("Menu not found with id " + reservationDto.getMenuId()));
+
+            if (newMenu.getState() == State.INACTIVE) {
+                throw new InactiveException("Menu is inactive");
+            }
+
+            reservation.setMenu(newMenu);
+        }
+
+        reservation.setDateReserve(reservationDto.getDateReserve());
+        reservation.setCustomerNumber(reservationDto.getCustomerNumber());
+        reservation.setState(State.valueOf(reservationDto.getState()));
+        reservation.setCustomerName(reservationDto.getCustomerName());
+
+        reservationRepository.save(reservation);
+
     }
 
     @Override
@@ -71,6 +108,10 @@ public class ReservationServiceV1Impl implements IReservationService {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NotFoundException("Reservation not found with id " + reservationId));
 
+        if (reservation.getState() == State.INACTIVE) {
+            throw new InactiveException("Reservation is inactive");
+        }
+
         Menu menu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new NotFoundException("Menu not found with id " + menuId));
 
@@ -78,16 +119,11 @@ public class ReservationServiceV1Impl implements IReservationService {
             throw new InactiveException("Menu is inactive");
         }
 
-        if (reservation.getState() == State.INACTIVE) {
-            throw new InactiveException("Reservation is inactive");
-        }
-
         if (reservation.getMenu() != null && reservation.getMenu().getId().equals(menuId)) {
             throw new AlreadyAssignedException("Menu is already assigned to this reservation");
         }
 
         reservation.setMenu(menu);
-
         reservationRepository.save(reservation);
     }
 }
