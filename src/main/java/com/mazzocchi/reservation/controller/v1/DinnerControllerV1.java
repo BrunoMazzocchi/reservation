@@ -2,6 +2,7 @@ package com.mazzocchi.reservation.controller.v1;
 
 import com.mazzocchi.reservation.config.exception.*;
 import com.mazzocchi.reservation.dto.*;
+import com.mazzocchi.reservation.dto.menu.*;
 import com.mazzocchi.reservation.mapper.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
@@ -17,8 +18,6 @@ import java.util.*;
 public class DinnerControllerV1 {
     final private IDinnerService dinnerService;
 
-    final private IDinnerMapper dinnerMapper = IDinnerMapper.INSTANCE;
-
     public DinnerControllerV1(IDinnerService dinnerService) {
         this.dinnerService = dinnerService;
     }
@@ -30,7 +29,7 @@ public class DinnerControllerV1 {
             @ApiResponse(responseCode = "404", description = "Dinner not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    public ResponseEntity<?> findDinnerById(@PathVariable Long id) {
-        return ResponseEntity.ok(dinnerMapper.dinnerToDto(dinnerService.findDinnerById(id)));
+    public ResponseEntity<DinnerDto> findDinnerById(@PathVariable Long id) {
+        return ResponseEntity.ok(dinnerService.findDinnerById(id));
     }
 }

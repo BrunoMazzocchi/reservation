@@ -1,13 +1,14 @@
 package com.mazzocchi.reservation.service.interfaces;
 
+import com.mazzocchi.reservation.dto.menu.*;
 import com.mazzocchi.reservation.models.*;
 import org.springframework.data.domain.*;
 
 public interface IDinnerService {
-    Page<Dinner> findAllDinnersByMenuId(Long menuId, Pageable pageable);
-    
-    Dinner findDinnerByIdAndMenuId(Long dinnerId, Long menuId);
+    Page<DinnerDto> findAllDinnersByMenuId(Long menuId, Pageable pageable);
 
-    Dinner findDinnerById(Long dinnerId);
+    DinnerDto findDinnerByIdAndMenuId(Long dinnerId, Long menuId);
+
+    DinnerDto findDinnerById(Long dinnerId);
 }
 

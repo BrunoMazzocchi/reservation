@@ -84,14 +84,11 @@ public class MenuControllerV1 {
             @RequestHeader(defaultValue = "10") int size
     ) {
 
-            final Page<Dinner> dinners = dinnerService.findAllDinnersByMenuId(id, PageRequest.of(page, size));
+            final Page<DinnerDto> dinners = dinnerService.findAllDinnersByMenuId(id, PageRequest.of(page, size));
 
-
-
-            List<DinnerDto> dinnerDto = dinners.getContent().stream().map(dinnerMapper::dinnerToDto).collect(Collectors.toList());
 
             PagedResponse<DinnerDto> response = new PagedResponse<>(
-                    dinnerDto,
+                    dinners.getContent(),
                     dinners.getNumber(),
                     dinners.getSize(),
                     dinners.getTotalElements(),
@@ -115,7 +112,7 @@ public class MenuControllerV1 {
             @PathVariable Long dinnerId
     ) {
 
-            return new ResponseEntity<>(dinnerMapper.dinnerToDto(dinnerService.findDinnerByIdAndMenuId(dinnerId, menuId)), HttpStatus.OK);
+            return new ResponseEntity<>(dinnerService.findDinnerByIdAndMenuId(dinnerId, menuId), HttpStatus.OK);
     }
 
 }
