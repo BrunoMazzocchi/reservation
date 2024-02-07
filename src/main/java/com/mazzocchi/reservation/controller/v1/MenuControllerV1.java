@@ -18,18 +18,21 @@ import java.util.stream.*;
 public class MenuControllerV1 {
 
     private final IMenuService menuService;
+    private final IDinnerService dinnerService;
 
     private final IMenuMapper menuMapper = IMenuMapper.INSTANCE;
 
-    public MenuControllerV1(IMenuService menuService) {
+    private final IDinnerMapper dinnerMapper = IDinnerMapper.INSTANCE;
+
+    public MenuControllerV1(IMenuService menuService, IDinnerService dinnerService) {
         this.menuService = menuService;
+        this.dinnerService = dinnerService;
     }
 
     @GetMapping("/all")
     @Operation(summary = "Find all menus", description = "Find all paginated")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found all menus"),
-            @ApiResponse(responseCode = "404", description = "No menus found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<PagedResponse<MenuDto>> findAllMenus(
@@ -37,12 +40,8 @@ public class MenuControllerV1 {
             @RequestHeader(defaultValue = "10") int size,
             @RequestHeader(defaultValue = "ACTIVE") String state
     ) {
-        try {
             final Page<Menu> menus = menuService.findAllMenus(State.valueOf(state),  PageRequest.of(page, size));
 
-            if (menus.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
 
             List<MenuDto> menuDto = menus.getContent().stream().map(menuMapper::menuToDto).collect(Collectors.toList());
 
@@ -56,9 +55,7 @@ public class MenuControllerV1 {
             );
 
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
 
@@ -67,21 +64,57 @@ public class MenuControllerV1 {
     @Operation(summary = "Find a menu by its id", description = "Find a menu by it's id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found the menu"),
-            @ApiResponse(responseCode = "404", description = "Menu not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<MenuDto> findMenuById(@PathVariable Long id) {
-        try {
-            // Tries to find the menu by its id and returns it if found. If not, returns a 404
-            final Menu menu = menuService.findMenuById(id);
-
-            if (menu == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-
-            return new ResponseEntity<>(menuMapper.menuToDto(menu), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(menuMapper.menuToDto(menuService.findMenuById(id)), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}/dinner")
+    @Operation(summary = "Find all dinners by menu id", description = "Find all dinners by menu id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found all dinners"),
+            @ApiResponse(responseCode = "404", description = "No dinners found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    public ResponseEntity<PagedResponse<DinnerDto>> findAllDinnersByMenuId(
+            @PathVariable Long id,
+            @RequestHeader(defaultValue = "0") int page,
+            @RequestHeader(defaultValue = "10") int size
+    ) {
+
+            final Page<Dinner> dinners = dinnerService.findAllDinnersByMenuId(id, PageRequest.of(page, size));
+
+
+
+            List<DinnerDto> dinnerDto = dinners.getContent().stream().map(dinnerMapper::dinnerToDto).collect(Collectors.toList());
+
+            PagedResponse<DinnerDto> response = new PagedResponse<>(
+                    dinnerDto,
+                    dinners.getNumber(),
+                    dinners.getSize(),
+                    dinners.getTotalElements(),
+                    dinners.getTotalPages(),
+                    dinners.isLast()
+            );
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{menuId}/dinner/{dinnerId}")
+    @Operation(summary = "Find a dinner by its id and menu id", description = "Find a dinner by its id and menu id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Found the dinner"),
+            @ApiResponse(responseCode = "404", description = "Dinner not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    public ResponseEntity<DinnerDto> findDinnerByIdAndMenuId(
+            @PathVariable Long menuId,
+            @PathVariable Long dinnerId
+    ) {
+
+            return new ResponseEntity<>(dinnerMapper.dinnerToDto(dinnerService.findDinnerByIdAndMenuId(dinnerId, menuId)), HttpStatus.OK);
+    }
+
 }

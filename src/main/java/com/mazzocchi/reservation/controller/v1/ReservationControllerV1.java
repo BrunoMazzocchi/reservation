@@ -37,13 +37,10 @@ public class ReservationControllerV1 {
     })
     public ResponseEntity <String> saveReservation(@Valid @RequestBody ReservationDto reservationDto) {
         // Saves the reservation. If the reservation is saved, returns a 201. If not, returns a 400
-        try {
+
             reservationService.saveReservation(reservationMapper.dtoToReservation(reservationDto));
             return new ResponseEntity<>("Reservation saved", HttpStatus.CREATED);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+
     }
 
     @GetMapping("/all")
@@ -57,12 +54,8 @@ public class ReservationControllerV1 {
             @RequestHeader(defaultValue = "10") int size,
             @RequestHeader(defaultValue = "ACTIVE") String state
     ) {
-        try {
-            final Page<Reservation> reservations = reservationService.findAllReservations(State.valueOf(state), PageRequest.of(page, size));
 
-            if (reservations.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+            final Page<Reservation> reservations = reservationService.findAllReservations(State.valueOf(state), PageRequest.of(page, size));
 
             List<ReservationDto> reservationDto = reservations.getContent().stream().map(reservationMapper::reservationToDto).collect(Collectors.toList());
 
@@ -77,9 +70,7 @@ public class ReservationControllerV1 {
 
 
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
 
@@ -93,16 +84,11 @@ public class ReservationControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity<ReservationDto> findReservationById(@PathVariable Long id) {
-        try {
+
             // Tries to find the reservation by its id and returns it if found. If not, returns a 404
             final Reservation reservation = reservationService.findReservationById(id);
-            if (reservation == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
             return new ResponseEntity<>(reservationMapper.reservationToDto(reservation), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     @PutMapping("/update/{id}")
@@ -113,17 +99,12 @@ public class ReservationControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity <String> updateReservationById(@PathVariable Long id, @RequestBody ReservationDto reservationDto) {
-        try {
+
             // If the reservation is not found, return a not found
             Reservation reservation = reservationService.findReservationById(id);
-            if (reservation == null) {
-                return new ResponseEntity<>("Reservation not found", HttpStatus.NOT_FOUND);
-            }
             reservationService.updateReservationById(id, reservationMapper.dtoToReservation(reservationDto));
             return new ResponseEntity<>("Reservation updated", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal Server error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     @DeleteMapping("/cancel/{id}")
@@ -135,19 +116,10 @@ public class ReservationControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity <String> cancelReservationById(@PathVariable Long id) {
-        try {
-            // If the reservation is already canceled, return a not found
-            Reservation reservation = reservationService.findReservationById(id);
-            if (reservation == null ) {
-                return new ResponseEntity<>("Reservation not found", HttpStatus.NOT_FOUND);
-            } else if (reservation.getState() == State.INACTIVE) {
-                return new ResponseEntity<>("Reservation already canceled", HttpStatus.OK);
-            }
+
             reservationService.cancelReservationById(id);
             return new ResponseEntity<>("Reservation canceled", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Internal Server error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
     @PutMapping("/add-menu/{reservationId}/{menuId}")
@@ -162,16 +134,10 @@ public class ReservationControllerV1 {
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     public ResponseEntity <String> addMenuToReservation(@PathVariable Long reservationId, @PathVariable Long menuId) {
-        try {
+
             reservationService.addMenuToReservation(reservationId, menuId);
             return new ResponseEntity<>("Menu added to reservation", HttpStatus.OK);
-        } catch (NotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (InactiveException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }  catch (Exception e) {
-            return new ResponseEntity<>("Internal Server error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
     }
 
 }

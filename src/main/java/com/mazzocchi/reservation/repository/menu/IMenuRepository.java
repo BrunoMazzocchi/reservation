@@ -8,6 +8,4 @@ import org.springframework.stereotype.*;
 @Repository
 public interface IMenuRepository extends JpaRepository<Menu, Long> {
     Page<Menu> findByState(State state, Pageable pageable);
-
-
 }

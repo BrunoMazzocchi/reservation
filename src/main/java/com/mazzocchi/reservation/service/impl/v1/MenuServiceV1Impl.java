@@ -14,7 +14,7 @@ import java.util.*;
 public class MenuServiceV1Impl implements  IMenuService{
     private final IMenuRepository menuRepository;
 
-    public MenuServiceV1Impl(IMenuRepository menuRepository) {
+    public MenuServiceV1Impl(IMenuRepository menuRepository, IDinnerRepository dinnerRepository) {
         this.menuRepository = menuRepository;
     }
 
@@ -26,4 +26,5 @@ public class MenuServiceV1Impl implements  IMenuService{
     public Menu findMenuById(Long id) {
         return menuRepository.findById(id).orElse(null);
     }
+
 }
