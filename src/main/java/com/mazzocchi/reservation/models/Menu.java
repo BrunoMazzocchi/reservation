@@ -1,5 +1,6 @@
 package com.mazzocchi.reservation.models;
 
+import jakarta.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,10 +17,10 @@ public class Menu {
     @Column(name = "id_menu")
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "price")
+    @Column(name = "price", nullable = false, columnDefinition = "DECIMAL(10,2)")
     private double price;
 
     @Enumerated(EnumType.STRING)
@@ -32,5 +33,12 @@ public class Menu {
             inverseJoinColumns = @JoinColumn(name = "id_dinner")
     )
     private List<Dinner> dinners;
+
+    @PrePersist
+    @PreUpdate
+    // Updates the price of the menu based on the sum of the prices of the dinners
+    public void updatePrice() {
+        this.price = dinners.stream().mapToDouble(Dinner::getPrice).sum();
+    }
 
 }

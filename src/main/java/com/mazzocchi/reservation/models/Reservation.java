@@ -10,19 +10,19 @@ import java.sql.*;
 @Table(name = "reserve")
 @Getter
 @Setter
-public class Reserve {
+public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_reserve")
     private Long id;
 
-    @Column(name = "customer_name")
+    @Column(name = "customer_name", nullable = false)
     private String customerName;
 
-    @Column(name = "customer_number")
+    @Column(name = "customer_number", nullable = false, length = 12)
     private String customerNumber;
 
-    @Column(name = "date_reserve")
+    @Column(name = "date_reserve", nullable = false, columnDefinition = "TIMESTAMP", updatable = false)
     private Date dateReserve;
 
     @Enumerated(EnumType.STRING)
