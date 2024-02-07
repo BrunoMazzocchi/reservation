@@ -1,6 +1,7 @@
 package com.mazzocchi.reservation.service.interfaces;
 
 import com.mazzocchi.reservation.models.*;
+import org.springframework.data.domain.*;
 
 import java.util.*;
 
@@ -9,7 +10,7 @@ public interface IReservationService {
     void saveReservation(Reservation reservation);
 
     /// Find all reservations
-    List<Reservation> findAllReservations();
+    Page<Reservation> findAllReservations(State state, Pageable pageable);
 
     /// Find a reservation by its id
     Reservation findReservationById(Long id);

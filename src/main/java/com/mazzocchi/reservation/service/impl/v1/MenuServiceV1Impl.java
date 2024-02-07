@@ -4,6 +4,7 @@ import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.repository.menu.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
@@ -19,9 +20,7 @@ public class MenuServiceV1Impl implements  IMenuService{
 
 
     @Override
-    public List<Menu> findAllMenus() {
-        return menuRepository.findAll();
-    }
+    public Page<Menu> findAllMenus(State state, Pageable pageable) { return menuRepository.findByState(state, pageable); }
 
     @Override
     public Menu findMenuById(Long id) {

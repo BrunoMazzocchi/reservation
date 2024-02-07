@@ -4,6 +4,7 @@ import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.repository.reserve.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.*;
 
 import java.util.*;
@@ -24,9 +25,10 @@ public class ReservationServiceV1Impl implements IReservationService {
     }
 
     @Override
-    public List<Reservation> findAllReservations() {
-        return reservationRepository.findAll();
+    public Page<Reservation> findAllReservations(State state,  Pageable pageable) {
+        return reservationRepository.findByState(state,  pageable);
     }
+
 
     @Override
     public Reservation findReservationById(Long id) {

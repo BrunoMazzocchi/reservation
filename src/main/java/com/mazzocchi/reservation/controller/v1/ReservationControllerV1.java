@@ -6,6 +6,7 @@ import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
+import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,10 +47,38 @@ public class ReservationControllerV1 {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Found reservations"),
     })
-    public ResponseEntity <List<ReservationDto>> findAllReservations() {
-        final List<Reservation> reservations = reservationService.findAllReservations();
-        return new ResponseEntity<>(reservations.stream().map(reservationMapper::reservationToDto).collect(Collectors.toList()), HttpStatus.OK);
+    public ResponseEntity<PagedResponse<ReservationDto>> findAllMenus(
+            @RequestHeader(defaultValue = "0") int page,
+            @RequestHeader(defaultValue = "10") int size,
+            @RequestHeader(defaultValue = "ACTIVE") String state
+    ) {
+        try {
+            final Page<Reservation> reservations = reservationService.findAllReservations(State.valueOf(state), PageRequest.of(page, size));
+
+            if (reservations.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            List<ReservationDto> reservationDto = reservations.getContent().stream().map(reservationMapper::reservationToDto).collect(Collectors.toList());
+
+            PagedResponse<ReservationDto> response = new PagedResponse<>(
+                    reservationDto,
+                    reservations.getNumber(),
+                    reservations.getSize(),
+                    reservations.getTotalElements(),
+                    reservations.getTotalPages(),
+                    reservations.isLast()
+            );
+
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Find a reservation by its id", description = "Find a reservation by it's id")
