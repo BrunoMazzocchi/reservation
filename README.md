@@ -47,7 +47,8 @@ By adhering to these architectural principles, the project aims to be scalable, 
 The app contains various dockerfile related to launch the app almost immediately. To do so, open the project and build them as follows: 
 - docker pull openjdk:17-jdk-slim
 - docker pull gradle:7.4-jdk17
-- docker-compose up --build
+- docker-compose build
+- docker-compose up
 
      
       
