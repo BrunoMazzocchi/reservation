@@ -50,5 +50,7 @@ The app contains various dockerfile related to launch the app almost immediately
 - docker-compose build
 - docker-compose up
 
+If crashes, cancel the process and run it again.
+
      
       

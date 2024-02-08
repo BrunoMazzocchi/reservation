@@ -6,12 +6,14 @@ RUN gradle build --no-daemon
 
 # Package stage
 FROM openjdk:17-jdk-slim
-RUN apt-get update && apt-get install -y default-mysql-client
-RUN apt-get update && apt-get install -y netcat
 WORKDIR /usr/local/lib
 COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
-COPY wait-for-mysql.sh wait-for-mysql.sh
-RUN bash -c 'chmod +x /usr/local/lib/wait-for-mysql.sh'
-ENTRYPOINT ["/usr/local/lib/wait-for-mysql.sh", "mysql", "3306", "java", "-jar", "app.jar"]
-# Establece el puerto en el que se ejecutará la aplicación
+
+# Wait for MySQL to be ready
+HEALTHCHECK --interval=30s --timeout=10s CMD curl -f http://localhost:3306 || exit 1
+
+# Set the command to run the Java application
+CMD ["java", "-jar", "app.jar"]
+
+# Set the port on which the application will run
 EXPOSE 8081
