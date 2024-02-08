@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Esperar a que MySQL esté disponible
-/wait-for-it.sh mysql:$MYSQL_PORT
+wait-for-it.sh mysql:$MYSQL_PORT
 
 # Restaurar la base de datos desde el archivo de respaldo
 if [ -f /backup-dir/backup.sql ]; then
