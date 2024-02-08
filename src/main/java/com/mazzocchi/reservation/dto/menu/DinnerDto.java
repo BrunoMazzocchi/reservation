@@ -5,6 +5,8 @@ import lombok.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class DinnerDto {
     private Long id;
     @NotBlank(message = "Name cannot be blank")
