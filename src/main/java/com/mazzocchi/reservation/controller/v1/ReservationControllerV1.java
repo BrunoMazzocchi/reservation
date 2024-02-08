@@ -6,6 +6,7 @@ import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.tags.*;
 import jakarta.validation.*;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 @RestController
 @RequestMapping("/api/v1/reservation")
+@Tag(name = "Reservation Controller", description = "Reservation Controller")
 public class ReservationControllerV1 {
     final IReservationService reservationService;
 
@@ -110,7 +112,7 @@ public class ReservationControllerV1 {
     }
 
     @PutMapping("/add-menu/{reservationId}/{menuId}")
-    @Operation(summary = "Add a menu to a reservation", description = "Add a menu to a reservation")
+    @Operation(summary = "Add a menu to a reservation", description = "Add a menu to a reservation. The menu must be active and the reservation must be active. A menu can only be added to a reservation once.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Menu added to reservation"),
             @ApiResponse(responseCode = "404", description = "Reservation not found"),

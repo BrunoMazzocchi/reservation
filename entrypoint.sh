@@ -13,5 +13,12 @@ fi
 # Iniciar el servicio MySQL
 service mysql start
 
+# Valida que el servicio de mysql este corriendo y que el archivo se haya ejectuado
+if [ "$(service mysql status | grep 'active (running)')" ] && [ -f /backup-dir/backup.sql ]; then
+  echo "El servicio de MySQL está corriendo y el archivo de respaldo se ejecutó correctamente"
+else
+  echo "El servicio de MySQL no está corriendo o el archivo de respaldo no se ejecutó correctamente"
+fi
+
 # Iniciar la aplicación
 java -jar /usr/local/lib/app.jar

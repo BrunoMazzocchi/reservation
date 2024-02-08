@@ -6,12 +6,14 @@ import com.mazzocchi.reservation.models.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.tags.*;
 import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/menu")
+@Tag(name = "Menu Controller", description = "Menu Controller")
 public class MenuControllerV1 {
 
     private final IMenuService menuService;

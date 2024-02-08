@@ -3,10 +3,12 @@ import com.mazzocchi.reservation.dto.menu.*;
 import com.mazzocchi.reservation.service.interfaces.*;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.*;
+import io.swagger.v3.oas.annotations.tags.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/dinner")
+@Tag(name = "Dinner Controller", description = "Dinner Controller")
 public class DinnerControllerV1 {
     final private IDinnerService dinnerService;
 
